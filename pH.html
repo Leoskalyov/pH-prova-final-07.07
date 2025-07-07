@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Monitoramento de pH do Solo - Milho</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Monitoramento de pH do Solo - Milho</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f0f8f5;
+      color: #2e4d2f;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 30px auto;
+      padding: 20px;
+      background-color: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      text-align: center;
+      color: #2c6e49;
+    }
+
+    .ph-info {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .ph-info p {
+      margin: 5px 0;
+      padding: 10px;
+      background-color: #e1f5e1;
+      border: 1px solid #b3ddb3;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+
+    canvas {
+      margin-top: 30px;
+      background-color: #fff;
+      border: 1px solid #d3d3d3;
+      border-radius: 8px;
+      padding: 10px;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 30px;
+      font-size: 14px;
+      color: #888;
+    }
+  </style>
+</head>
+<body>
+  <h2>Fazenda de Milho - Monitoramento de pH do Solo</h2>
+  <p><strong>pH atual:</strong> <span id="phAtual">--</span></p>
+  <p><strong>Soma dos pH:</strong> <span id="somaPh">--</span></p>
+  <p><strong>Média dos pH:</strong> <span id="mediaPh">--</span></p>
+  <p><strong>Maior pH:</strong> <span id="maiorPh">--</span></p>
+  <p><strong>Menor pH:</strong> <span id="menorPh">--</span></p>
+
+  <canvas id="graficoPh" width="400" height="200"></canvas>
+
+  <script>
+    const valoresPh = [];
+
+    const graficoCtx = document.getElementById('graficoPh').getContext('2d');
+    const grafico = new Chart(graficoCtx, {
+      type: 'line',
+      data: {
+        labels: [],
+        datasets: [{
+          label: 'pH do Solo',
+          data: [],
+          borderColor: 'green',
+          borderWidth: 2
+        }]
+      }
+    });
+
+    function gerarPhAleatorio() {
+      return (Math.random() * (7 - 4) + 4).toFixed(2); 
+    }
+
+    function atualizarLeitura() {
+      const novoPh = parseFloat(gerarPhAleatorio());
+      valoresPh.push(novoPh);
+
+      document.getElementById('phAtual').textContent = novoPh.toFixed(2);
+
+      grafico.data.labels.push(valoresPh.length);
+      grafico.data.datasets[0].data.push(novoPh);
+      grafico.update();
+
+      const soma = valoresPh.reduce((a, b) => a + b, 0);
+      document.getElementById('somaPh').textContent = soma.toFixed(2);
+
+      const media = soma / valoresPh.length;
+      document.getElementById('mediaPh').textContent = media.toFixed(2);
+
+      const maior = Math.max(...valoresPh);
+      document.getElementById('maiorPh').textContent = maior.toFixed(2);
+
+      const menor = Math.min(...valoresPh);
+      document.getElementById('menorPh').textContent = menor.toFixed(2);
+    }
+
+    setInterval(atualizarLeitura, 2000); 
+  </script>
+</body>
+</html>
